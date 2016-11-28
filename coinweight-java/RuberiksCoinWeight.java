@@ -1,7 +1,7 @@
 import java.util.Arrays;
 import java.util.StringTokenizer;
 
-//Taken from Ruberik's submission
+// Taken from Ruberik's submission and modified 
 public class RuberiksCoinWeight implements CoinWeight {
 	public int possibleValues(int weight, String[] coins) {
 		int n = coins.length;
@@ -50,30 +50,4 @@ public class RuberiksCoinWeight implements CoinWeight {
 		}
 		cache[valsofar][wtleft] = true;
 	}
-
-	// "They have misunderestimated me." --Ruberik
-
-	public int gcd(int a, int b) {
-		return (b == 0) ? a : gcd(b, a % b);
-	}
-
-	public int lcm(int a, int b) {
-		return a / gcd(a, b) * b;
-	}
-
-	public long mod(long a, long b) {
-		return a - a / b * b;
-	}
-
-	public long longgcd(long a, long b) { // it's kind of creepy that people can
-											// watch me code.
-		return (b == 0) ? a : longgcd(b, mod(a, b));
-	}
-
-	public long longlcm(long a, long b) { // somebody get my camera back from
-											// John.
-		return a / longgcd(a, b) * b;
-	}
 }
-
-// Powered by PopsEdit
