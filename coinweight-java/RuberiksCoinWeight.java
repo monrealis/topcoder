@@ -38,10 +38,9 @@ public class RuberiksCoinWeight implements CoinWeight {
 
 	private int countVals() {
 		int cnt = 0;
-		for (int i = 0; i < vals.length; i++) {
+		for (int i = 0; i < vals.length; i++)
 			if (vals[i])
 				cnt++;
-		}
 		return cnt;
 	}
 
