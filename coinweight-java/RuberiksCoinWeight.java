@@ -3,8 +3,8 @@ import java.util.StringTokenizer;
 
 // Taken from Ruberik's submission and modified 
 public class RuberiksCoinWeight implements CoinWeight {
-	boolean[][] cache;
-	boolean[] vals;
+	private boolean[][] cache;
+	private boolean[] vals;
 	private int[] val;
 	private int[] min;
 	private int[] max;
@@ -44,18 +44,19 @@ public class RuberiksCoinWeight implements CoinWeight {
 		return cnt;
 	}
 
-	void numvals(int valsofar, int wtleft) {
-		if (wtleft < 0)
+	void numvals(int valueSoFar, int weightLeft) {
+		System.out.println(valueSoFar + " " + weightLeft);
+		if (weightLeft < 0)
 			return;
-		if (wtleft == 0) {
-			vals[valsofar] = true;
+		if (weightLeft == 0) {
+			vals[valueSoFar] = true;
 			return;
 		}
-		if (cache[valsofar][wtleft])
+		if (cache[valueSoFar][weightLeft])
 			return;
 		for (int i = 0; i < val.length; i++)
 			for (int j = min[i]; j <= max[i]; j++)
-				numvals(valsofar + val[i], wtleft - j);
-		cache[valsofar][wtleft] = true;
+				numvals(valueSoFar + val[i], weightLeft - j);
+		cache[valueSoFar][weightLeft] = true;
 	}
 }
