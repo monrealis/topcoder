@@ -1,10 +1,9 @@
 import static java.lang.Integer.parseInt;
 import static java.util.Arrays.asList;
-import static java.util.Arrays.sort;
 import static java.util.Collections.sort;
 
 import java.util.ArrayList;
-import java.util.Collections;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
@@ -52,11 +51,16 @@ public class CoinWeight {
 			if (matches(weight, prefix))
 				if (!values.contains(value)) {
 					values.add(value);
-					System.out.println(values);
-					System.out.println(values.size());
 				}
 			for (Coin coin : coins)
-				checkPermutations(append(prefix, coin));
+				if (isNewCombination(prefix, coin))
+					checkPermutations(append(prefix, coin));
+		}
+
+		private boolean isNewCombination(Coin[] prefix, Coin coin) {
+			if (prefix.length == 0)
+				return true;
+			return prefix[prefix.length - 1].compareTo(coin) <= 0;
 		}
 
 		private Coin[] append(Coin[] prefix, Coin coin) {
@@ -108,6 +112,11 @@ public class CoinWeight {
 		@Override
 		public int compareTo(Coin other) {
 			return new Integer(value).compareTo(other.value);
+		}
+
+		@Override
+		public String toString() {
+			return String.valueOf(value);
 		}
 	}
 }
