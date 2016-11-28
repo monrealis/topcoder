@@ -1,5 +1,4 @@
 import static java.lang.Integer.parseInt;
-import static java.util.Arrays.asList;
 import static java.util.Collections.sort;
 
 import java.util.ArrayList;
@@ -36,24 +35,21 @@ public class MyCoinWeight implements CoinWeight {
 			this.coins = coins;
 		}
 
-		private int count() {
+		public int count() {
 			checkPermutations(new Coin[] {});
 			return values.size();
 		}
 
 		private void checkPermutations(Coin[] prefix) {
-			if (prefix.length > 1400)
+			if (getSumOfMin(prefix) > weight)
 				return;
-			if (getSumOfMin(asList(prefix)) > weight)
-				return;
-			int value = getSumOfValues(asList(prefix));
+			int value = getSumOfValues(prefix);
 			if (matches(weight, prefix))
-				if (!values.contains(value)) {
+				if (!values.contains(value))
 					values.add(value);
-				}
 			for (Coin coin : coins)
 				if (isNewCombination(prefix, coin))
-					checkPermutations(append(prefix, coin));
+					checkPermutations(appendedCopy(prefix, coin));
 		}
 
 		private boolean isNewCombination(Coin[] prefix, Coin coin) {
@@ -62,7 +58,7 @@ public class MyCoinWeight implements CoinWeight {
 			return prefix[prefix.length - 1].compareTo(coin) <= 0;
 		}
 
-		private Coin[] append(Coin[] prefix, Coin coin) {
+		private Coin[] appendedCopy(Coin[] prefix, Coin coin) {
 			Coin[] joined = new Coin[prefix.length + 1];
 			System.arraycopy(prefix, 0, joined, 0, prefix.length);
 			joined[prefix.length] = coin;
@@ -70,29 +66,29 @@ public class MyCoinWeight implements CoinWeight {
 		}
 
 		private boolean matches(int weight, Coin[] input) {
-			int sumOfMin = getSumOfMin(asList(input));
-			int sumOfMax = getSumOfMax(asList(input));
+			int sumOfMin = getSumOfMin(input);
+			int sumOfMax = getSumOfMax(input);
 			return weight >= sumOfMin && weight <= sumOfMax;
 		}
 	}
 
-	private int getSumOfValues(List<Coin> input) {
+	private static int getSumOfValues(Coin[] coins) {
 		int r = 0;
-		for (Coin c : input)
+		for (Coin c : coins)
 			r += c.value;
 		return r;
 	}
 
-	private int getSumOfMin(List<Coin> input) {
+	private static int getSumOfMin(Coin[] coins) {
 		int r = 0;
-		for (Coin c : input)
+		for (Coin c : coins)
 			r += c.minWeight;
 		return r;
 	}
 
-	private int getSumOfMax(List<Coin> input) {
+	private static int getSumOfMax(Coin[] coins) {
 		int r = 0;
-		for (Coin c : input)
+		for (Coin c : coins)
 			r += c.maxWeight;
 		return r;
 	}
