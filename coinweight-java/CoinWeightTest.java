@@ -7,7 +7,7 @@ public class CoinWeightTest {
 
 	@Before
 	public void setUp() {
-		solution = new MyCoinWeight();
+		solution = new RuberiksCoinWeight();
 	}
 
 	@Test(timeout = 2000)
