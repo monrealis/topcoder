@@ -13,9 +13,8 @@ using namespace std;
 #define ISEQ(c) (c).begin(), (c).end()
 
 class DiskSpace {
-
-	public: int minDrives(vector<int> used, vector<int> total) {
+public:
+	int minDrives(vector<int> used, vector<int> total) {
 		return int();
 	}
-
 };
