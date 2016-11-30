@@ -13,7 +13,7 @@ class DiskSpace {
 public:
 	int minDrives(vector<int> used, vector<int> total) {
 		sortDescending(total);
-		int spaceUsed = getTotalSpaceUsed(used);
+		int spaceUsed = getSum(used);
 		return getNumberOfDisksNotEmpty(total, spaceUsed);
 	}
 
@@ -23,10 +23,10 @@ private:
 		reverse(integers.begin(), integers.end());
 	}
 
-	int getTotalSpaceUsed(vector<int> used) {
+	int getSum(vector<int> usedSpace) {
 		int sum = 0;
-		FORIT(it, used)
-			sum += *it;
+		for (unsigned i = 0; i < usedSpace.size(); ++i)
+			sum += usedSpace.at(i);
 		return sum;
 	}
 
