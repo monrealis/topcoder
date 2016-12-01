@@ -11,8 +11,6 @@ public class ModeProbability {
 	private int[] probs;
 	private int value;
 	private List<Permutation> permutations = new ArrayList<>();
-	private List<Integer> mostFrequentNumbers = new ArrayList<>();
-	private List<Double> probabilities = new ArrayList<>();
 
 	public double getProb(int[] probs, int n, int value) {
 		prepare(probs, n, value);
@@ -27,8 +25,6 @@ public class ModeProbability {
 
 	private double execute() {
 		fillPermutations(new int[] {});
-		fillMostFrequentNumbers();
-		fillProbabilities();
 		return getProbability();
 	}
 
@@ -54,14 +50,13 @@ public class ModeProbability {
 		return r;
 	}
 
-	private void fillMostFrequentNumbers() {
-		for (Permutation p : permutations)
-			mostFrequentNumbers.add(p.getSingleMostFrequentNumber());
-	}
-
-	private void fillProbabilities() {
-		for (Permutation p : permutations)
-			probabilities.add(getProbability(p.permutation));
+	private double getProbability() {
+		double probability = 0;
+		Integer integerValue = new Integer(value);
+		for (Permutation permutation : permutations)
+			if (integerValue.equals(permutation.getSingleMostFrequentNumber()))
+				probability += getProbability(permutation.permutation) * getMultiplier(permutation);
+		return probability;
 	}
 
 	private double getProbability(int[] permutation) {
@@ -71,20 +66,10 @@ public class ModeProbability {
 		return probability;
 	}
 
-	private double getProbability() {
-		double probability = 0;
-		Integer integerValue = new Integer(value);
-		for (int i = 0; i < permutations.size(); ++i)
-			if (integerValue.equals(mostFrequentNumbers.get(i)))
-				probability += probabilities.get(i) * getMultiplier(permutations.get(i));
-		return probability;
-	}
-
 	private long getMultiplier(Permutation permutation) {
-		Map<Integer, Integer> counts = permutation.getCounts();
 		int multiplier = 1;
 		int remaining = numberOfTries;
-		for (int count : counts.values()) {
+		for (int count : permutation.getCounts().values()) {
 			multiplier *= c(remaining, count);
 			remaining = remaining - count;
 		}
