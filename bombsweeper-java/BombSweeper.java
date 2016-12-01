@@ -1,71 +1,58 @@
-import static java.util.Arrays.asList;
-
 public class BombSweeper {
-	private int rows;
-	private int columns;
-	private String[] extendedBoard;
-
 	public double winPercentage(String[] board) {
-		rows = board.length;
-		columns = board[0].length();
-		extendedBoard = extendBoard(board);
-		return getWinPercentage();
+		return getWinPercentage(new Board(board));
 	}
 
-	private String[] extendBoard(String[] board) {
-		String[] extended = new String[rows + 2];
-		extended[0] = createEmptyRow(columns + 2);
-		extended[rows + 1] = createEmptyRow(columns + 2);
-		for (int i = 0; i < rows; ++i)
-			extended[i + 1] = "." + board[i] + ".";
-		return extended;
-	}
-
-	private String createEmptyRow(int length) {
-		String r = "";
-		for (int i = 0; i < length; ++i)
-			r += ".";
-		return r;
-	}
-
-	private double getWinPercentage() {
-		int wins = getNumberOfWins();
-		int losses = getNumberOfLosses();
+	private double getWinPercentage(Board board) {
+		int wins = 0;
+		int losses = 0;
+		for (int i = 0; i < board.getRowCount(); ++i)
+			for (int j = 0; j < board.getColCount(); ++j)
+				if (board.isBomb(i, j))
+					++losses;
+				else if (board.isWin(i, j))
+					++wins;
 		return 1.0 * wins / (wins + losses) * 100;
 	}
+}
 
-	private int getNumberOfLosses() {
-		int failed = 0;
-		for (int i = 0; i < rows; ++i)
-			for (int j = 0; j < columns; ++j)
-				if (isBomb(i, j))
-					++failed;
-		return failed;
+class Board {
+	private static final int[] NEIGHBOUR_DELTAS = { -1, 0, 1 };
+	private final String[] board;
+
+	public Board(String[] board) {
+		this.board = board;
 	}
 
-	private int getNumberOfWins() {
-		int passed = 0;
-		for (int i = 0; i < rows; ++i)
-			for (int j = 0; j < columns; ++j) {
-				if (isWin(i, j))
-					++passed;
-			}
-		return passed;
-	}
-
-	private boolean isWin(int row, int column) {
-		for (int i : asList(-1, 0, 1))
-			for (int j : asList(-1, 0, 1))
+	public boolean isWin(int row, int column) {
+		for (int i : NEIGHBOUR_DELTAS)
+			for (int j : NEIGHBOUR_DELTAS)
 				if (isBomb(row + i, column + j))
 					return false;
 		return true;
 	}
 
-	private boolean isBomb(int row, int column) {
+	public boolean isBomb(int row, int column) {
 		return charAt(row, column) == 'B';
 	}
 
 	private char charAt(int i, int j) {
-		return extendedBoard[i + 1].charAt(j + 1);
+		if (i < 0)
+			return '.';
+		if (j < 0)
+			return '.';
+		if (i >= getRowCount())
+			return '.';
+		if (j >= getRowCount())
+			return '.';
+		return board[i].charAt(j);
+	}
+
+	public int getRowCount() {
+		return board.length;
+	}
+
+	public int getColCount() {
+		return board[0].length();
 	}
 }
