@@ -1,3 +1,4 @@
+import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -8,6 +9,7 @@ public class ModeProbability {
 	private int n;
 	private List<int[]> permutations = new ArrayList<>();
 	private List<Integer> mostFrequentNumbers = new ArrayList<>();
+	private List<Integer> mostFrequentNumberTimes = new ArrayList<>();
 	private List<Double> probabilities = new ArrayList<>();
 	private int[] probs;
 
@@ -21,16 +23,36 @@ public class ModeProbability {
 		for (int i = 0; i < permutations.size(); ++i)
 			if (mostFrequentNumbers.get(i) != null)
 				if (mostFrequentNumbers.get(i).equals(value))
-					r += probabilities.get(i);
+					r += probabilities.get(i) * getMultiplier(permutations.get(i), mostFrequentNumberTimes.get(i));
 		return r;
 	}
 
-	private void fillMostFrequentNumbers() {
-		for (int[] permutation : permutations)
-			mostFrequentNumbers.add(getMostFrequentNumber(permutation));
+	private int getMultiplier(int[] permutation, int times) {
+		int r = factorial(n) / factorial(times) / factorial(n - times);
+		return r;
 	}
 
-	private Integer getMostFrequentNumber(int[] permutation) {
+	private int factorial(int number) {
+		int f = 1;
+		for (int i = 1; i <= number; ++i)
+			f *= i;
+		return f;
+	}
+
+	private void fillMostFrequentNumbers() {
+		for (int[] permutation : permutations) {
+			Entry<Integer, Integer> entry = getMostFrequentNumber(permutation);
+			if (entry != null) {
+				mostFrequentNumbers.add(entry.getKey());
+				mostFrequentNumberTimes.add(entry.getValue());
+			} else {
+				mostFrequentNumbers.add(null);
+				mostFrequentNumberTimes.add(null);
+			}
+		}
+	}
+
+	private Entry<Integer, Integer> getMostFrequentNumber(int[] permutation) {
 		Map<Integer, Integer> counts = new TreeMap<>();
 		for (int number : permutation) {
 			Integer oldCount = counts.get(number);
@@ -45,7 +67,7 @@ public class ModeProbability {
 			if (entry.getValue().equals(maxCount))
 				mostFrequent.add(entry.getKey());
 		if (mostFrequent.size() == 1)
-			return mostFrequent.iterator().next();
+			return new AbstractMap.SimpleEntry<>(mostFrequent.iterator().next(), maxCount);
 		else
 			return null;
 	}
@@ -66,8 +88,12 @@ public class ModeProbability {
 		if (array.length == n)
 			permutations.add(array);
 		else
-			for (int i = 0; i < probs.length; ++i)
+			for (int i = 0; i < probs.length; ++i) {
+				if (array.length > 0)
+					if (array[array.length - 1] < i)
+						continue;
 				fillPermutations(append(array, i));
+			}
 	}
 
 	private int[] append(int[] array, int newElement) {
