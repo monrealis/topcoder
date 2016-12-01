@@ -1,4 +1,3 @@
-import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -10,7 +9,6 @@ public class ModeProbability {
 	private int numberOfTries;
 	private List<int[]> permutations = new ArrayList<>();
 	private List<Integer> mostFrequentNumbers = new ArrayList<>();
-	private List<Integer> mostFrequentNumberTimes = new ArrayList<>();
 	private List<Double> probabilities = new ArrayList<>();
 	private int[] probs;
 
@@ -23,58 +21,40 @@ public class ModeProbability {
 		return getProbability(value);
 	}
 
-	private double getProbability(Integer value) {
-		double probability = 0;
-		for (int i = 0; i < permutations.size(); ++i)
-			if (value.equals(mostFrequentNumbers.get(i)))
-				probability += probabilities.get(i) * getMultiplier(permutations.get(i));
-		return probability;
+	private void fillPermutations(int[] array) {
+		if (array.length == numberOfTries)
+			permutations.add(array);
+		else
+			for (int i = 0; i < probs.length; ++i)
+				if (!isNewElementIsSmallerThanOthers(array, i))
+					fillPermutations(appendToArray(array, i));
 	}
 
-	private long getMultiplier(int[] permutation) {
-		Map<Integer, Integer> counts = getCounts(permutation);
-		int product = 1;
-		int remaining = numberOfTries;
-		for (int count : counts.values()) {
-			product *= c(remaining, count);
-			remaining = remaining - count;
-		}
-		return product;
+	private boolean isNewElementIsSmallerThanOthers(int[] array, int i) {
+		if (array.length == 0)
+			return false;
+		return array[array.length - 1] < i;
 	}
 
-	private long c(int n, int k) {
-		long r = factorial(n) / factorial(k) / factorial(n - k);
+	private int[] appendToArray(int[] array, int newElement) {
+		int[] r = new int[array.length + 1];
+		System.arraycopy(array, 0, r, 0, array.length);
+		r[array.length] = newElement;
 		return r;
 	}
 
-	private long factorial(int number) {
-		long f = 1;
-		for (int i = 1; i <= number; ++i)
-			f *= i;
-		return f;
-	}
-
 	private void fillMostFrequentNumbers() {
-		for (int[] permutation : permutations) {
-			Entry<Integer, Integer> entry = getMostFrequentNumber(permutation);
-			if (entry != null) {
-				mostFrequentNumbers.add(entry.getKey());
-				mostFrequentNumberTimes.add(entry.getValue());
-			} else {
-				mostFrequentNumbers.add(null);
-				mostFrequentNumberTimes.add(null);
-			}
-		}
+		for (int[] permutation : permutations)
+			mostFrequentNumbers.add(getSingleMostFrequentNumber(permutation));
 	}
 
-	private Entry<Integer, Integer> getMostFrequentNumber(int[] permutation) {
+	private Integer getSingleMostFrequentNumber(int[] permutation) {
 		Map<Integer, Integer> counts = getCounts(permutation);
 		int maxCount = getMax(counts.values());
 		List<Integer> mostFrequent = getKeysByValue(counts, maxCount);
-		if (mostFrequent.size() == 1)
-			return new AbstractMap.SimpleEntry<>(mostFrequent.iterator().next(), maxCount);
-		else
+		if (mostFrequent.size() != 1)
 			return null;
+		return mostFrequent.iterator().next();
 	}
 
 	private int getMax(Collection<Integer> numbers) {
@@ -114,25 +94,33 @@ public class ModeProbability {
 		return probability;
 	}
 
-	private void fillPermutations(int[] array) {
-		if (array.length == numberOfTries)
-			permutations.add(array);
-		else
-			for (int i = 0; i < probs.length; ++i)
-				if (!isNewElementIsSmallerThanOthers(array, i))
-					fillPermutations(appendToArray(array, i));
+	private double getProbability(Integer value) {
+		double probability = 0;
+		for (int i = 0; i < permutations.size(); ++i)
+			if (value.equals(mostFrequentNumbers.get(i)))
+				probability += probabilities.get(i) * getMultiplier(permutations.get(i));
+		return probability;
 	}
 
-	private boolean isNewElementIsSmallerThanOthers(int[] array, int i) {
-		if (array.length == 0)
-			return false;
-		return array[array.length - 1] < i;
+	private long getMultiplier(int[] permutation) {
+		Map<Integer, Integer> counts = getCounts(permutation);
+		int multiplier = 1;
+		int remaining = numberOfTries;
+		for (int count : counts.values()) {
+			multiplier *= c(remaining, count);
+			remaining = remaining - count;
+		}
+		return multiplier;
 	}
 
-	private int[] appendToArray(int[] array, int newElement) {
-		int[] r = new int[array.length + 1];
-		System.arraycopy(array, 0, r, 0, array.length);
-		r[array.length] = newElement;
-		return r;
+	private long c(int n, int k) {
+		return factorial(n) / factorial(k) / factorial(n - k);
+	}
+
+	private long factorial(int number) {
+		long factorial = 1;
+		for (int i = 1; i <= number; ++i)
+			factorial *= i;
+		return factorial;
 	}
 }
