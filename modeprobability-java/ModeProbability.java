@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -9,7 +10,7 @@ public class ModeProbability {
 	private int numberOfTries;
 	private int[] probs;
 	private int value;
-	private List<int[]> permutations = new ArrayList<>();
+	private List<Permutation> permutations = new ArrayList<>();
 	private List<Integer> mostFrequentNumbers = new ArrayList<>();
 	private List<Double> probabilities = new ArrayList<>();
 
@@ -33,7 +34,7 @@ public class ModeProbability {
 
 	private void fillPermutations(int[] array) {
 		if (array.length == numberOfTries)
-			permutations.add(array);
+			permutations.add(new Permutation(array));
 		else
 			for (int i = 0; i < probs.length; ++i)
 				if (!isNewElementIsSmallerThanOthers(array, i))
@@ -54,47 +55,13 @@ public class ModeProbability {
 	}
 
 	private void fillMostFrequentNumbers() {
-		for (int[] permutation : permutations)
-			mostFrequentNumbers.add(getSingleMostFrequentNumber(permutation));
-	}
-
-	private Integer getSingleMostFrequentNumber(int[] permutation) {
-		Map<Integer, Integer> counts = getCounts(permutation);
-		int maxCount = getMax(counts.values());
-		List<Integer> mostFrequent = getKeysByValue(counts, maxCount);
-		if (mostFrequent.size() != 1)
-			return null;
-		return mostFrequent.iterator().next();
-	}
-
-	private int getMax(Collection<Integer> numbers) {
-		int max = numbers.iterator().next();
-		for (int count : numbers)
-			max = Math.max(count, max);
-		return max;
-	}
-
-	private List<Integer> getKeysByValue(Map<Integer, Integer> map, int value) {
-		List<Integer> r = new ArrayList<>();
-		for (Entry<Integer, Integer> entry : map.entrySet())
-			if (entry.getValue().equals(value))
-				r.add(entry.getKey());
-		return r;
-	}
-
-	private Map<Integer, Integer> getCounts(int[] permutation) {
-		Map<Integer, Integer> counts = new TreeMap<>();
-		for (int number : permutation) {
-			Integer oldCount = counts.get(number);
-			int newCount = oldCount != null ? oldCount + 1 : 1;
-			counts.put(number, newCount);
-		}
-		return counts;
+		for (Permutation p : permutations)
+			mostFrequentNumbers.add(p.getSingleMostFrequentNumber());
 	}
 
 	private void fillProbabilities() {
-		for (int[] permutation : permutations)
-			probabilities.add(getProbability(permutation));
+		for (Permutation p : permutations)
+			probabilities.add(getProbability(p.permutation));
 	}
 
 	private double getProbability(int[] permutation) {
@@ -113,8 +80,8 @@ public class ModeProbability {
 		return probability;
 	}
 
-	private long getMultiplier(int[] permutation) {
-		Map<Integer, Integer> counts = getCounts(permutation);
+	private long getMultiplier(Permutation permutation) {
+		Map<Integer, Integer> counts = permutation.getCounts();
 		int multiplier = 1;
 		int remaining = numberOfTries;
 		for (int count : counts.values()) {
@@ -133,5 +100,64 @@ public class ModeProbability {
 		for (int i = 1; i <= number; ++i)
 			factorial *= i;
 		return factorial;
+	}
+}
+
+class Permutation {
+	public final int[] permutation;
+
+	public Permutation(int[] permutation) {
+		this.permutation = permutation;
+	}
+
+	public Integer getSingleMostFrequentNumber() {
+		Map<Integer, Integer> counts = getCounts();
+		int maxCount = getMax(counts.values());
+		List<Integer> mostFrequent = getKeysByValue(counts, maxCount);
+		if (mostFrequent.size() != 1)
+			return null;
+		return mostFrequent.iterator().next();
+	}
+
+	public Map<Integer, Integer> getCounts() {
+		Map<Integer, Integer> counts = new TreeMap<>();
+		for (int number : permutation) {
+			Integer oldCount = counts.get(number);
+			int newCount = oldCount != null ? oldCount + 1 : 1;
+			counts.put(number, newCount);
+		}
+		return counts;
+	}
+
+	private int getMax(Collection<Integer> numbers) {
+		int max = numbers.iterator().next();
+		for (int count : numbers)
+			max = Math.max(count, max);
+		return max;
+	}
+
+	private List<Integer> getKeysByValue(Map<Integer, Integer> map, int value) {
+		List<Integer> r = new ArrayList<>();
+		for (Entry<Integer, Integer> entry : map.entrySet())
+			if (entry.getValue().equals(value))
+				r.add(entry.getKey());
+		return r;
+	}
+
+	@Override
+	public int hashCode() {
+		return Arrays.hashCode(permutation);
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (obj instanceof Permutation)
+			return Arrays.equals(permutation, ((Permutation) obj).permutation);
+		return false;
+	}
+
+	@Override
+	public String toString() {
+		return Arrays.toString(permutation);
 	}
 }
