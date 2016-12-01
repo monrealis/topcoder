@@ -7,18 +7,28 @@ import java.util.TreeMap;
 
 public class ModeProbability {
 	private int numberOfTries;
+	private int[] probs;
+	private int value;
 	private List<int[]> permutations = new ArrayList<>();
 	private List<Integer> mostFrequentNumbers = new ArrayList<>();
 	private List<Double> probabilities = new ArrayList<>();
-	private int[] probs;
 
 	public double getProb(int[] probs, int n, int value) {
+		prepare(probs, n, value);
+		return execute();
+	}
+
+	private void prepare(int[] probs, int n, int value) {
 		this.numberOfTries = n;
 		this.probs = probs;
+		this.value = value;
+	}
+
+	private double execute() {
 		fillPermutations(new int[] {});
 		fillMostFrequentNumbers();
 		fillProbabilities();
-		return getProbability(value);
+		return getProbability();
 	}
 
 	private void fillPermutations(int[] array) {
@@ -94,10 +104,11 @@ public class ModeProbability {
 		return probability;
 	}
 
-	private double getProbability(Integer value) {
+	private double getProbability() {
 		double probability = 0;
+		Integer integerValue = new Integer(value);
 		for (int i = 0; i < permutations.size(); ++i)
-			if (value.equals(mostFrequentNumbers.get(i)))
+			if (integerValue.equals(mostFrequentNumbers.get(i)))
 				probability += probabilities.get(i) * getMultiplier(permutations.get(i));
 		return probability;
 	}
