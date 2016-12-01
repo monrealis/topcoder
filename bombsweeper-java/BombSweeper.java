@@ -9,13 +9,29 @@ public class BombSweeper {
 		rows = board.length;
 		columns = board[0].length();
 		extendedBoard = extendBoard(board);
-		return calculatePercentage();
+		return getWinPercentage();
 	}
 
-	private double calculatePercentage() {
+	private String[] extendBoard(String[] board) {
+		String[] extended = new String[rows + 2];
+		extended[0] = createEmptyRow(columns + 2);
+		extended[rows + 1] = createEmptyRow(columns + 2);
+		for (int i = 0; i < rows; ++i)
+			extended[i + 1] = "." + board[i] + ".";
+		return extended;
+	}
+
+	private String createEmptyRow(int length) {
+		String r = "";
+		for (int i = 0; i < length; ++i)
+			r += ".";
+		return r;
+	}
+
+	private double getWinPercentage() {
 		int wins = getNumberOfWins();
 		int losses = getNumberOfLosses();
-		return 100.0 * wins / (wins + losses);
+		return 1.0 * wins / (wins + losses) * 100;
 	}
 
 	private int getNumberOfLosses() {
@@ -38,8 +54,6 @@ public class BombSweeper {
 	}
 
 	private boolean isWin(int row, int column) {
-		if (isBomb(row, column))
-			return false;
 		for (int i : asList(-1, 0, 1))
 			for (int j : asList(-1, 0, 1))
 				if (isBomb(row + i, column + j))
@@ -53,21 +67,5 @@ public class BombSweeper {
 
 	private char charAt(int i, int j) {
 		return extendedBoard[i + 1].charAt(j + 1);
-	}
-
-	private String[] extendBoard(String[] board) {
-		String[] extended = new String[rows + 2];
-		extended[0] = createEmptyRow(columns + 2);
-		extended[rows + 1] = createEmptyRow(columns + 2);
-		for (int i = 0; i < rows; ++i)
-			extended[i + 1] = "." + board[i] + ".";
-		return extended;
-	}
-
-	private String createEmptyRow(int length) {
-		String r = "";
-		for (int i = 0; i < length; ++i)
-			r += ".";
-		return r;
 	}
 }
