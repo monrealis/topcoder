@@ -1,12 +1,13 @@
 import java.util.AbstractMap;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.TreeMap;
 
 public class ModeProbability {
-	private int n;
+	private int numberOfTries;
 	private List<int[]> permutations = new ArrayList<>();
 	private List<Integer> mostFrequentNumbers = new ArrayList<>();
 	private List<Integer> mostFrequentNumberTimes = new ArrayList<>();
@@ -14,23 +15,26 @@ public class ModeProbability {
 	private int[] probs;
 
 	public double getProb(int[] probs, int n, int value) {
-		this.n = n;
+		this.numberOfTries = n;
 		this.probs = probs;
 		fillPermutations(new int[] {});
 		fillMostFrequentNumbers();
 		fillProbabilities();
-		double r = 0;
+		return getProbability(value);
+	}
+
+	private double getProbability(Integer value) {
+		double probability = 0;
 		for (int i = 0; i < permutations.size(); ++i)
-			if (mostFrequentNumbers.get(i) != null)
-				if (mostFrequentNumbers.get(i).equals(value))
-					r += probabilities.get(i) * getMultiplier(permutations.get(i));
-		return r;
+			if (value.equals(mostFrequentNumbers.get(i)))
+				probability += probabilities.get(i) * getMultiplier(permutations.get(i));
+		return probability;
 	}
 
 	private long getMultiplier(int[] permutation) {
 		Map<Integer, Integer> counts = getCounts(permutation);
 		int product = 1;
-		int remaining = n;
+		int remaining = numberOfTries;
 		for (int count : counts.values()) {
 			product *= c(remaining, count);
 			remaining = remaining - count;
@@ -65,17 +69,27 @@ public class ModeProbability {
 
 	private Entry<Integer, Integer> getMostFrequentNumber(int[] permutation) {
 		Map<Integer, Integer> counts = getCounts(permutation);
-		int maxCount = counts.values().iterator().next();
-		for (int count : counts.values())
-			maxCount = Math.max(count, maxCount);
-		List<Integer> mostFrequent = new ArrayList<>();
-		for (Entry<Integer, Integer> entry : counts.entrySet())
-			if (entry.getValue().equals(maxCount))
-				mostFrequent.add(entry.getKey());
+		int maxCount = getMax(counts.values());
+		List<Integer> mostFrequent = getKeysByValue(counts, maxCount);
 		if (mostFrequent.size() == 1)
 			return new AbstractMap.SimpleEntry<>(mostFrequent.iterator().next(), maxCount);
 		else
 			return null;
+	}
+
+	private int getMax(Collection<Integer> numbers) {
+		int max = numbers.iterator().next();
+		for (int count : numbers)
+			max = Math.max(count, max);
+		return max;
+	}
+
+	private List<Integer> getKeysByValue(Map<Integer, Integer> map, int value) {
+		List<Integer> r = new ArrayList<>();
+		for (Entry<Integer, Integer> entry : map.entrySet())
+			if (entry.getValue().equals(value))
+				r.add(entry.getKey());
+		return r;
 	}
 
 	private Map<Integer, Integer> getCounts(int[] permutation) {
@@ -101,18 +115,21 @@ public class ModeProbability {
 	}
 
 	private void fillPermutations(int[] array) {
-		if (array.length == n)
+		if (array.length == numberOfTries)
 			permutations.add(array);
 		else
-			for (int i = 0; i < probs.length; ++i) {
-				if (array.length > 0)
-					if (array[array.length - 1] < i)
-						continue;
-				fillPermutations(append(array, i));
-			}
+			for (int i = 0; i < probs.length; ++i)
+				if (!isNewElementIsSmallerThanOthers(array, i))
+					fillPermutations(appendToArray(array, i));
 	}
 
-	private int[] append(int[] array, int newElement) {
+	private boolean isNewElementIsSmallerThanOthers(int[] array, int i) {
+		if (array.length == 0)
+			return false;
+		return array[array.length - 1] < i;
+	}
+
+	private int[] appendToArray(int[] array, int newElement) {
 		int[] r = new int[array.length + 1];
 		System.arraycopy(array, 0, r, 0, array.length);
 		r[array.length] = newElement;
