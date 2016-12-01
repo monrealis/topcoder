@@ -1,6 +1,5 @@
 import java.util.AbstractMap;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -20,13 +19,6 @@ public class ModeProbability {
 		fillPermutations(new int[] {});
 		fillMostFrequentNumbers();
 		fillProbabilities();
-		//System.out.println(probabilities);
-
-		double sum = 0;
-		for (int i = 0; i < permutations.size(); ++i)
-			sum += getMultiplier(permutations.get(i)) * probabilities.get(i);
-		System.out.println(sum);
-
 		double r = 0;
 		for (int i = 0; i < permutations.size(); ++i)
 			if (mostFrequentNumbers.get(i) != null)
@@ -35,7 +27,7 @@ public class ModeProbability {
 		return r;
 	}
 
-	private int getMultiplier(int[] permutation) {
+	private long getMultiplier(int[] permutation) {
 		Map<Integer, Integer> counts = getCounts(permutation);
 		int product = 1;
 		int remaining = n;
@@ -43,18 +35,16 @@ public class ModeProbability {
 			product *= c(remaining, count);
 			remaining = remaining - count;
 		}
-		//System.out.println(Arrays.toString(permutation) + " " + product);
 		return product;
 	}
 
-	private int c(int n, int k) {
-		int r = factorial(n) / factorial(k) / factorial(n - k);
-		//System.out.println("C " + n + " " + k + " = " + r);
+	private long c(int n, int k) {
+		long r = factorial(n) / factorial(k) / factorial(n - k);
 		return r;
 	}
 
-	private int factorial(int number) {
-		int f = 1;
+	private long factorial(int number) {
+		long f = 1;
 		for (int i = 1; i <= number; ++i)
 			f *= i;
 		return f;
