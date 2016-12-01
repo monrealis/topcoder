@@ -29,13 +29,21 @@ public class ModeProbability {
 	}
 
 	private int getMultiplier(int[] permutation, int times) {
-		System.out.println(Arrays.toString(permutation));
-		int r1 = c(times);
-		return r1;
+		Map<Integer, Integer> counts = getCounts(permutation);
+		int product = 1;
+		int remaining = n;
+		for (int count : counts.values()) {
+			product *= c(remaining, count);
+			remaining = remaining - count;
+		}
+		System.out.println(Arrays.toString(permutation) + " " + product);
+		return product;
 	}
 
-	private int c(int k) {
-		return factorial(n) / factorial(k) / factorial(n - k);
+	private int c(int n, int k) {
+		int r = factorial(n) / factorial(k) / factorial(n - k);
+		System.out.println("C " + n + " " + k + " = " + r);
+		return r;
 	}
 
 	private int factorial(int number) {
