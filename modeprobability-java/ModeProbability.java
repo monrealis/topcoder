@@ -1,5 +1,6 @@
 import java.util.AbstractMap;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -28,8 +29,13 @@ public class ModeProbability {
 	}
 
 	private int getMultiplier(int[] permutation, int times) {
-		int r = factorial(n) / factorial(times) / factorial(n - times);
-		return r;
+		System.out.println(Arrays.toString(permutation));
+		int r1 = c(times);
+		return r1;
+	}
+
+	private int c(int k) {
+		return factorial(n) / factorial(k) / factorial(n - k);
 	}
 
 	private int factorial(int number) {
@@ -53,12 +59,7 @@ public class ModeProbability {
 	}
 
 	private Entry<Integer, Integer> getMostFrequentNumber(int[] permutation) {
-		Map<Integer, Integer> counts = new TreeMap<>();
-		for (int number : permutation) {
-			Integer oldCount = counts.get(number);
-			int newCount = oldCount != null ? oldCount + 1 : 1;
-			counts.put(number, newCount);
-		}
+		Map<Integer, Integer> counts = getCounts(permutation);
 		int maxCount = counts.values().iterator().next();
 		for (int count : counts.values())
 			maxCount = Math.max(count, maxCount);
@@ -70,6 +71,16 @@ public class ModeProbability {
 			return new AbstractMap.SimpleEntry<>(mostFrequent.iterator().next(), maxCount);
 		else
 			return null;
+	}
+
+	private Map<Integer, Integer> getCounts(int[] permutation) {
+		Map<Integer, Integer> counts = new TreeMap<>();
+		for (int number : permutation) {
+			Integer oldCount = counts.get(number);
+			int newCount = oldCount != null ? oldCount + 1 : 1;
+			counts.put(number, newCount);
+		}
+		return counts;
 	}
 
 	private void fillProbabilities() {
