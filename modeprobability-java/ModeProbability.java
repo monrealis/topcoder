@@ -20,15 +20,22 @@ public class ModeProbability {
 		fillPermutations(new int[] {});
 		fillMostFrequentNumbers();
 		fillProbabilities();
+		//System.out.println(probabilities);
+
+		double sum = 0;
+		for (int i = 0; i < permutations.size(); ++i)
+			sum += getMultiplier(permutations.get(i)) * probabilities.get(i);
+		System.out.println(sum);
+
 		double r = 0;
 		for (int i = 0; i < permutations.size(); ++i)
 			if (mostFrequentNumbers.get(i) != null)
 				if (mostFrequentNumbers.get(i).equals(value))
-					r += probabilities.get(i) * getMultiplier(permutations.get(i), mostFrequentNumberTimes.get(i));
+					r += probabilities.get(i) * getMultiplier(permutations.get(i));
 		return r;
 	}
 
-	private int getMultiplier(int[] permutation, int times) {
+	private int getMultiplier(int[] permutation) {
 		Map<Integer, Integer> counts = getCounts(permutation);
 		int product = 1;
 		int remaining = n;
@@ -36,13 +43,13 @@ public class ModeProbability {
 			product *= c(remaining, count);
 			remaining = remaining - count;
 		}
-		System.out.println(Arrays.toString(permutation) + " " + product);
+		//System.out.println(Arrays.toString(permutation) + " " + product);
 		return product;
 	}
 
 	private int c(int n, int k) {
 		int r = factorial(n) / factorial(k) / factorial(n - k);
-		System.out.println("C " + n + " " + k + " = " + r);
+		//System.out.println("C " + n + " " + k + " = " + r);
 		return r;
 	}
 

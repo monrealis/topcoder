@@ -34,6 +34,29 @@ public class ModeProbabilityTest {
 	}
 
 	@Test(timeout = 2000)
+	public void testCase0_0() {
+		int[] probs = new int[] { 25, 75 };
+		int n = 2;
+		int value = 0;
+
+		double expected = 0.0625;
+		double actual = solution.getProb(probs, n, value);
+
+		assertEquals(expected, actual);
+	}
+	@Test(timeout = 2000)
+	public void testCase0_1() {
+		int[] probs = new int[] { 25, 75 };
+		int n = 2;
+		int value = 1;
+
+		double expected = 0.5625;
+		double actual = solution.getProb(probs, n, value);
+
+		assertEquals(expected, actual);
+	}
+
+	@Test(timeout = 2000)
 	public void testCase1() {
 		int[] probs = new int[] { 50, 50 };
 		int n = 9;
