@@ -1,8 +1,10 @@
 delta = 0.000000000001
 
 class FractionSplit:
-	def getSum(self, n, d):
+	def __init__(self):
 		self.fractions = []
+		
+	def getSum(self, n, d):
 		self.fillFractions(1.0 * n / d)
 		return self.fractions
 
