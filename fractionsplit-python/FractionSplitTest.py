@@ -1,10 +1,10 @@
-import FractionSplit
+import FractionSplit2
 import unittest
 
 class FractionSplitTest(unittest.TestCase):
 
 	def setUp(self):
-		self.solution = FractionSplit.FractionSplit()
+		self.solution = FractionSplit2.FractionSplit()
 
 	def test_0(self):
 		n = 4
