@@ -26,8 +26,13 @@ class FractionSplit:
     
 class Fraction:
     def __init__(self, a, b):
-        self.a = a;
-        self.b = b;
+        if (a == 0):
+            self.a = 0;
+            self.b = 1
+        else:
+            gcd = self._gcd(a, b);
+            self.a = a / gcd;
+            self.b = b / gcd;
     
     def minus(self, other):
         n = self.a * other.b - self.b * other.a
@@ -42,6 +47,13 @@ class Fraction:
     
     def __str__(self):
         return "%d/%d" % (self.a, self.b)
+    
+    def _gcd(self, a, b):
+        if (a == 0):
+            return b;
+        else:
+            return self._gcd(b % a, a)
+        
     
         
         
