@@ -4,23 +4,42 @@ import java.util.List;
 
 public class ABBADiv1 {
     private int n;
-    private List<String> permutations;
+    private int differenceOfAs;
+    private int differenceOfBs;
+    private String initial;
+    private String target;
+    private boolean found;
 
     public String canObtain(String initial, String target) {
-        n = target.length() - initial.length();
-        permutations = new ArrayList();
+        findDifferences(initial, target);
+        this.initial = initial;
+        this.target = target;
         collectPermutations("");
-        for (String permutation : permutations)
-            if (target.equals(apply(initial, permutation)))
-                return "Possible";
+        if (found)
+            return "Possible";
         return "Impossible";
+    }
+
+    private void findDifferences(String initial, String target) {
+        differenceOfAs = count(target, 'A') - count(initial, 'A');
+        differenceOfBs = count(target, 'B') - count(initial, 'B');
+        n = differenceOfBs + differenceOfAs;
     }
 
 
     private void collectPermutations(String permutation) {
-        if (permutation.length() == n)
-            permutations.add(permutation);
-        else
+        if (found)
+            return;
+        if (count(permutation, 'a') > differenceOfAs)
+            return;
+        if (count(permutation, 'b') > differenceOfBs)
+            return;
+        if (permutation.length() == n) {
+            if (target.equals(apply(initial, permutation))) {
+                found = true;
+                return;
+            }
+        } else
             for (String action : new String[]{"a", "b"})
                 collectPermutations(permutation + action);
     }
@@ -43,5 +62,14 @@ public class ABBADiv1 {
         for (int i = 0; i < chars.length; ++i)
             r[chars.length - 1 - i] = chars[i];
         return new String(r);
+    }
+
+
+    private int count(String target, char c) {
+        int r = 0;
+        for (char t : target.toCharArray())
+            if (t == c)
+                ++r;
+        return r;
     }
 }
