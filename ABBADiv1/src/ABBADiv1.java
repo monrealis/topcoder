@@ -1,23 +1,48 @@
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
 public class ABBADiv1 {
-    private int differenceOfAs;
     private int differenceOfBs;
 
     public String canObtain(String initial, String target) {
-        findDifferences(initial, target);
+        prepare(initial, target);
+        return findCanObtain(reverseInitialIfNecessary(initial), target);
+    }
+
+    private void prepare(String initial, String target) {
+        differenceOfBs = getDifferencesOfB(initial, target);
+    }
+
+    private String reverseInitialIfNecessary(String initial) {
+        String initialPossiblyReversed;
         if (differenceOfBs % 2 == 1)
-            initial = reverse(initial);
-        if (target.contains(initial))
-            return "Possible";
+            initialPossiblyReversed = reverse(initial);
+        else
+            initialPossiblyReversed = initial;
+        return initialPossiblyReversed;
+    }
+
+    private String findCanObtain(String initial, String target) {
+        int from = 0;
+        int position;
+        while ((position = target.indexOf(initial, from)) >= 0) {
+            from = position + 1;
+            String before = target.substring(0, position);
+            String after = target.substring(position + initial.length());
+            if (isCanObtain(before, after))
+                return "Possible";
+        }
         return "Impossible";
     }
 
-    private void findDifferences(String initial, String target) {
-        differenceOfAs = count(target, 'A') - count(initial, 'A');
-        differenceOfBs = count(target, 'B') - count(initial, 'B');
+    private boolean isCanObtain(String stringBefore, String stringAfter) {
+        int bBefore = count(stringBefore, 'B');
+        int bAfter = count(stringAfter, 'B');
+        if (differenceOfBs % 2 == 0)
+            return bBefore == bAfter;
+        else
+            return bBefore - bAfter == 1;
+    }
+
+    private int getDifferencesOfB(String initial, String target) {
+        return count(target, 'B') - count(initial, 'B');
     }
 
     private String reverse(String text) {
