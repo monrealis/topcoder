@@ -36,7 +36,6 @@ class GridSortMaxTest(unittest.TestCase):
 
 		self.assertEqual(expected, actual)
 
-	@unittest.skip
 	def test_3(self):
 		n = 1
 		m = 10

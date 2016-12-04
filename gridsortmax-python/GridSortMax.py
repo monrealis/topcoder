@@ -6,14 +6,18 @@ class GridSortMax:
         self.m = m
         self.grid = grid
         self.perfect = self.createPerfectMatrix()
-        self.best = set()
+        if (n == 1):
+            return self.compareWithPerfect(sorted(self.grid));
+        if (m == 1):
+            return self.compareWithPerfect(sorted(self.grid));
+        best = self.compareWithPerfect(self.grid)
         for rows in itertools.permutations(range(n), n):
             swappedRows = self.swapRows(grid, rows)
             for columns in itertools.permutations(range(m), m):
                 swappedColumns = self.swapColumns(swappedRows, columns)
                 comparison = self.compareWithPerfect(swappedColumns)
-                self.best.add(comparison);
-        return max(self.best)
+                best = max(best, comparison)
+        return best;
 
     def createPerfectMatrix(self):
         r = []
