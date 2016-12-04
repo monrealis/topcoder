@@ -33,14 +33,14 @@ class GridSortMax:
         return r
 
     def swapRows(self, grid, rows):
-        r = grid[:]
+        r = [None] * (self.n * self.m)
         for row in range(self.n):
             for column in range(self.m):
                 r[row * self.m + column] = grid[rows[row] * self.m + column]
         return r
 
     def swapColumns(self, grid, columns):
-        r = grid[:]
+        r = [None] * (self.n * self.m)
         for row in range(self.n):
             for column in range(self.m):
                 r[row * self.m + column] = grid[row * self.m + columns[column]]
