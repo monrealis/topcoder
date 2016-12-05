@@ -1,23 +1,45 @@
 import itertools
 
+
 class GridSortMax:
     def findMax(self, n, m, grid):
         self.n = n
         self.m = m
         self.grid = grid
         self.perfect = self.createPerfectMatrix()
-        if (n == 1):
-            return self.compareWithPerfect(sorted(self.grid));
-        if (m == 1):
-            return self.compareWithPerfect(sorted(self.grid));
-        best = self.compareWithPerfect(self.grid)
-        for rows in itertools.permutations(range(n), n):
-            swappedRows = self.swapRows(grid, rows)
-            for columns in itertools.permutations(range(m), m):
-                swappedColumns = self.swapColumns(swappedRows, columns)
-                comparison = self.compareWithPerfect(swappedColumns)
-                best = max(best, comparison)
-        return best;
+
+        rows = [None] * self.n
+        columns = [None] * self.m
+        allRows = range(self.n)
+        allColumns = range(self.m)
+        for value in range(1, self.n * self.m + 1):
+            (wantedRow, wantedColumn) = ((value - 1) / self.m, (value - 1) % self.m)
+            (row, column) = self.find(value)
+            canMatchRow = rows[wantedRow] == None or rows[wantedRow] == row
+            canMatchColumn = columns[wantedColumn] == None or columns[wantedColumn] == column
+            if not canMatchRow:
+                continue;
+            if not canMatchColumn:
+                continue
+            if not rows.__contains__(row):
+                rows[wantedRow] = row
+                allRows.remove(row)
+            if not columns.__contains__(column):
+                columns[wantedColumn] = column
+                allColumns.remove(column)
+        emptyRows = [i for i, val in enumerate(rows) if val == None]
+        emptyColumns = [i for i, val in enumerate(columns) if val == None]
+        for i, rowIndex in enumerate(emptyRows):
+            rows[rowIndex] = allRows[i]
+        for i, columnIndex in enumerate(emptyColumns):
+            columns[columnIndex] = allColumns[i]
+        rowsSwapped = self.swapRows(self.grid, rows + allRows)
+        columnsSwapped = self.swapColumns(rowsSwapped, columns + allColumns)
+        return self.compareWithPerfect(columnsSwapped)
+
+    def find(self, value):
+        index = self.grid.index(value)
+        return (index / self.m, index % self.m)
 
     def createPerfectMatrix(self):
         r = []
@@ -45,5 +67,3 @@ class GridSortMax:
             for column in range(self.m):
                 r[row * self.m + column] = grid[row * self.m + columns[column]]
         return r
-
-
