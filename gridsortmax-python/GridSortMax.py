@@ -14,9 +14,9 @@ class GridSortMax:
         allColumns = range(self.m)
         for value in range(1, self.n * self.m + 1):
             (expectedRow, expectedColumn) = self.getCoordinates(value - 1)
-            (currentRow, columnColumn) = self.findCurrentCoordinates(value)
+            (currentRow, currentColumn) = self.findCurrentCoordinates(value)
             canMatchRow = rows[expectedRow] == None or rows[expectedRow] == currentRow
-            canMatchColumn = columns[expectedColumn] == None or columns[expectedColumn] == columnColumn
+            canMatchColumn = columns[expectedColumn] == None or columns[expectedColumn] == currentColumn
             if not canMatchRow:
                 continue;
             if not canMatchColumn:
@@ -24,9 +24,9 @@ class GridSortMax:
             if not rows.__contains__(currentRow):
                 rows[expectedRow] = currentRow
                 allRows.remove(currentRow)
-            if not columns.__contains__(columnColumn):
-                columns[expectedColumn] = columnColumn
-                allColumns.remove(columnColumn)
+            if not columns.__contains__(currentColumn):
+                columns[expectedColumn] = currentColumn
+                allColumns.remove(currentColumn)
         emptyRows = [i for i, val in enumerate(rows) if val == None]
         emptyColumns = [i for i, val in enumerate(columns) if val == None]
         for i, rowIndex in enumerate(emptyRows):
