@@ -13,20 +13,20 @@ class GridSortMax:
         allRows = range(self.n)
         allColumns = range(self.m)
         for value in range(1, self.n * self.m + 1):
-            (wantedRow, wantedColumn) = ((value - 1) / self.m, (value - 1) % self.m)
-            (row, column) = self.find(value)
-            canMatchRow = rows[wantedRow] == None or rows[wantedRow] == row
-            canMatchColumn = columns[wantedColumn] == None or columns[wantedColumn] == column
+            (expectedRow, expectedColumn) = self.getCoordinates(value - 1)
+            (currentRow, columnColumn) = self.findCurrentCoordinates(value)
+            canMatchRow = rows[expectedRow] == None or rows[expectedRow] == currentRow
+            canMatchColumn = columns[expectedColumn] == None or columns[expectedColumn] == columnColumn
             if not canMatchRow:
                 continue;
             if not canMatchColumn:
                 continue
-            if not rows.__contains__(row):
-                rows[wantedRow] = row
-                allRows.remove(row)
-            if not columns.__contains__(column):
-                columns[wantedColumn] = column
-                allColumns.remove(column)
+            if not rows.__contains__(currentRow):
+                rows[expectedRow] = currentRow
+                allRows.remove(currentRow)
+            if not columns.__contains__(columnColumn):
+                columns[expectedColumn] = columnColumn
+                allColumns.remove(columnColumn)
         emptyRows = [i for i, val in enumerate(rows) if val == None]
         emptyColumns = [i for i, val in enumerate(columns) if val == None]
         for i, rowIndex in enumerate(emptyRows):
@@ -37,9 +37,11 @@ class GridSortMax:
         columnsSwapped = self.swapColumns(rowsSwapped, columns + allColumns)
         return self.compareWithPerfect(columnsSwapped)
 
-    def find(self, value):
-        index = self.grid.index(value)
-        return (index / self.m, index % self.m)
+    def findCurrentCoordinates(self, value):
+        return self.getCoordinates(self.grid.index(value))
+
+    def getCoordinates(self, value):
+        return (value / self.m, value % self.m)
 
     def createPerfectMatrix(self):
         r = []
