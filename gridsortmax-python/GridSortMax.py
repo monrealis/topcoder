@@ -1,6 +1,3 @@
-import itertools
-
-
 class GridSortMax:
     def findMax(self, n, m, grid):
         self.n = n
@@ -12,7 +9,7 @@ class GridSortMax:
         columns = [None] * self.m
         allRows = range(self.n)
         allColumns = range(self.m)
-        for value in range(1, self.n * self.m + 1):
+        for value in range(1, self.getCellCount() + 1):
             (expectedRow, expectedColumn) = self.getCoordinates(value - 1)
             (currentRow, currentColumn) = self.findCurrentCoordinates(value)
             canMatchRow = rows[expectedRow] == None or rows[expectedRow] == currentRow
@@ -52,20 +49,26 @@ class GridSortMax:
 
     def compareWithPerfect(self, grid):
         r = "";
-        for i in range(self.n * self.m):
+        for i in range(self.getCellCount()):
             r += "1" if grid[i] == self.perfect[i] else "0"
         return r
 
     def swapRows(self, grid, rows):
-        r = [None] * (self.n * self.m)
-        for row in range(self.n):
-            for column in range(self.m):
-                r[row * self.m + column] = grid[rows[row] * self.m + column]
-        return r
+        source = lambda row, column: row * self.m + column
+        target = lambda row, column: rows[row] * self.m + column
+        return self.swapCells(grid, source, target)
 
     def swapColumns(self, grid, columns):
-        r = [None] * (self.n * self.m)
+        source = lambda row, column: row * self.m + column
+        target = lambda row, column: row * self.m + columns[column]
+        return self.swapCells(grid, source, target)
+
+    def swapCells(self, grid, source, target):
+        r = [None] * self.getCellCount()
         for row in range(self.n):
             for column in range(self.m):
-                r[row * self.m + column] = grid[row * self.m + columns[column]]
+                r[source(row, column)] = grid[target(row, column)]
         return r
+
+    def getCellCount(self):
+        return self.n * self.m
