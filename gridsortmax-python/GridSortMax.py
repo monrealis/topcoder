@@ -5,10 +5,8 @@ class GridSortMax:
         rows, columns = self.findOrder(n, m, grid)
         return self.compareWithPerfect(self.swap(grid, columns, rows))
 
-
     def findOrder(self, n, m, grid):
         return self.OrderFinder(n, m, grid).find()
-
 
     class OrderFinder:
         def __init__(self, n, m, grid):
@@ -20,18 +18,19 @@ class GridSortMax:
 
         def find(self):
             for value in range(1, self.getCellCount() + 1):
-                (expectedRow, expectedColumn) = self.getCoordinates(value - 1)
-                (currentRow, currentColumn) = self.findCurrentCoordinates(value)
-                canMatchRow = self.rows[expectedRow] == None or self.rows[expectedRow] == currentRow
-                canMatchColumn = self.columns[expectedColumn] == None or self.columns[expectedColumn] == currentColumn
-                if not canMatchRow:
-                    continue;
-                if not canMatchColumn:
-                    continue
-                self.addRow(currentRow, expectedRow)
-                self.addColumn(currentColumn, expectedColumn)
+                self.checkValue(value)
             self.fillEmptyRowsAndColumns()
             return self.rows, self.columns
+
+        def checkValue(self, value):
+            (expectedRow, expectedColumn) = self.getCoordinates(value - 1)
+            (currentRow, currentColumn) = self.findCurrentCoordinates(value)
+            if self.rows[expectedRow] not in (None, currentRow):
+                return
+            if self.columns[expectedColumn] not in (None, currentColumn):
+                return
+            self.addRow(currentRow, expectedRow)
+            self.addColumn(currentColumn, expectedColumn)
 
         def addRow(self, currentRow, expectedRow):
             if not self.rows.__contains__(currentRow):
@@ -49,7 +48,6 @@ class GridSortMax:
 
         def getCoordinates(self, value):
             return (value / self.getM(), value % self.getM())
-
 
         def fillEmptyIndexes(self, all, remaining):
             empty = [i for i, val in enumerate(all) if val == None]
@@ -91,7 +89,7 @@ class GridSortMax:
         return r
 
     def compareWithPerfect(self, grid):
-        r = "";
+        r = ""
         for i in range(grid.__len__()):
             r += "1" if grid[i] == i + 1  else "0"
         return r
