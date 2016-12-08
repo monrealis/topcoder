@@ -3,7 +3,6 @@ class GridSortMax:
         self.n = n
         self.m = m
         self.grid = grid
-        self.perfect = self.createPerfectMatrix()
 
         rows = [None] * self.n
         columns = [None] * self.m
@@ -41,17 +40,10 @@ class GridSortMax:
     def getCoordinates(self, value):
         return (value / self.m, value % self.m)
 
-    def createPerfectMatrix(self):
-        r = []
-        for i in range(self.n):
-            for j in range(self.m):
-                r.append(i * self.m + j + 1)
-        return r
-
     def compareWithPerfect(self, grid):
         r = "";
         for i in range(self.getCellCount()):
-            r += "1" if grid[i] == self.perfect[i] else "0"
+            r += "1" if grid[i] == i + 1  else "0"
         return r
 
     def swapRows(self, grid, rows):
