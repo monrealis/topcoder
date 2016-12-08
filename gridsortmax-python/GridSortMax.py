@@ -7,8 +7,8 @@ class GridSortMax:
 
         rows = [None] * self.n
         columns = [None] * self.m
-        allRows = range(self.n)
-        allColumns = range(self.m)
+        remainingRows = range(self.n)
+        remainingColumns = range(self.m)
         for value in range(1, self.getCellCount() + 1):
             (expectedRow, expectedColumn) = self.getCoordinates(value - 1)
             (currentRow, currentColumn) = self.findCurrentCoordinates(value)
@@ -20,19 +20,20 @@ class GridSortMax:
                 continue
             if not rows.__contains__(currentRow):
                 rows[expectedRow] = currentRow
-                allRows.remove(currentRow)
+                remainingRows.remove(currentRow)
             if not columns.__contains__(currentColumn):
                 columns[expectedColumn] = currentColumn
-                allColumns.remove(currentColumn)
-        emptyRows = [i for i, val in enumerate(rows) if val == None]
-        emptyColumns = [i for i, val in enumerate(columns) if val == None]
-        for i, rowIndex in enumerate(emptyRows):
-            rows[rowIndex] = allRows[i]
-        for i, columnIndex in enumerate(emptyColumns):
-            columns[columnIndex] = allColumns[i]
-        rowsSwapped = self.swapRows(self.grid, rows + allRows)
-        columnsSwapped = self.swapColumns(rowsSwapped, columns + allColumns)
+                remainingColumns.remove(currentColumn)
+        self.fillEmptyIndexes(rows, remainingRows)
+        self.fillEmptyIndexes(columns, remainingColumns)
+        rowsSwapped = self.swapRows(self.grid, rows )
+        columnsSwapped = self.swapColumns(rowsSwapped, columns)
         return self.compareWithPerfect(columnsSwapped)
+
+    def fillEmptyIndexes(self, all, remaining):
+        empty = [i for i, val in enumerate(all) if val == None]
+        for i, index in enumerate(empty):
+            all[index] = remaining[i]
 
     def findCurrentCoordinates(self, value):
         return self.getCoordinates(self.grid.index(value))
