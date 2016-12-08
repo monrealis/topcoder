@@ -28,24 +28,24 @@ class GridSortMax:
                     continue;
                 if not canMatchColumn:
                     continue
-                if not self.rows.__contains__(currentRow):
-                    self.rows[expectedRow] = currentRow
-                    self.remainingRows.remove(currentRow)
-                if not self.columns.__contains__(currentColumn):
-                    self.columns[expectedColumn] = currentColumn
-                    self.remainingColumns.remove(currentColumn)
-            self.fillEmptyIndexes(self.rows, self.remainingRows)
-            self.fillEmptyIndexes(self.columns, self.remainingColumns)
+                self.addRow(currentRow, expectedRow)
+                self.addColumn(currentColumn, expectedColumn)
+            self.fillEmptyRowsAndColumns()
             return self.rows, self.columns
 
-        def getCellCount(self):
-            return self.getN() * self.getM()
+        def addRow(self, currentRow, expectedRow):
+            if not self.rows.__contains__(currentRow):
+                self.rows[expectedRow] = currentRow
+                self.remainingRows.remove(currentRow)
 
-        def getN(self):
-            return self.rows.__len__()
+        def addColumn(self, currentColumn, expectedColumn):
+            if not self.columns.__contains__(currentColumn):
+                self.columns[expectedColumn] = currentColumn
+                self.remainingColumns.remove(currentColumn)
 
-        def getM(self):
-            return self.columns.__len__()
+        def fillEmptyRowsAndColumns(self):
+            self.fillEmptyIndexes(self.rows, self.remainingRows)
+            self.fillEmptyIndexes(self.columns, self.remainingColumns)
 
         def getCoordinates(self, value):
             return (value / self.getM(), value % self.getM())
@@ -58,6 +58,15 @@ class GridSortMax:
 
         def findCurrentCoordinates(self, value):
             return self.getCoordinates(self.grid.index(value))
+
+        def getCellCount(self):
+            return self.getN() * self.getM()
+
+        def getN(self):
+            return self.rows.__len__()
+
+        def getM(self):
+            return self.columns.__len__()
 
     def swap(self, grid, columns, rows):
         rowsSwapped = self.swapRows(grid, rows)
