@@ -75,7 +75,7 @@ class GridSortMax:
         return self.swapCells(grid, source, target)
 
     def swapCells(self, grid, source, target):
-        r = [None] * self.getCellCount()
+        r = [None] * grid.__len__()
         for row in range(self.n):
             for column in range(self.m):
                 r[source(row, column)] = grid[target(row, column)]
@@ -83,9 +83,6 @@ class GridSortMax:
 
     def compareWithPerfect(self, grid):
         r = "";
-        for i in range(self.getCellCount()):
+        for i in range(grid.__len__()):
             r += "1" if grid[i] == i + 1  else "0"
         return r
-
-    def getCellCount(self):
-        return self.n * self.m
