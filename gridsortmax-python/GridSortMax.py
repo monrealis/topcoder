@@ -12,8 +12,8 @@ class GridSortMax:
         def __init__(self, n, m, grid):
             self.rows = [None] * n
             self.columns = [None] * m
-            self.remainingRows = range(n)
-            self.remainingColumns = range(m)
+            self.remaining_rows = range(n)
+            self.remaining_columns = range(m)
             self.grid = grid
 
         def find(self):
@@ -23,31 +23,31 @@ class GridSortMax:
             return self.rows, self.columns
 
         def add_next_value(self, value):
-            (expectedRow, expectedColumn) = self.get_coordinates(value - 1)
-            (currentRow, currentColumn) = self.find_current_coordinates(value)
-            if self.rows[expectedRow] not in (None, currentRow):
+            (expected_row, expected_column) = self.get_coordinates(value - 1)
+            (current_row, current_column) = self.find_current_coordinates(value)
+            if self.rows[expected_row] not in (None, current_row):
                 return
-            if self.columns[expectedColumn] not in (None, currentColumn):
+            if self.columns[expected_column] not in (None, current_column):
                 return
-            self.add_row(currentRow, expectedRow)
-            self.add_column(currentColumn, expectedColumn)
+            self.add_row(current_row, expected_row)
+            self.add_column(current_column, expected_column)
 
-        def add_row(self, currentRow, expectedRow):
-            if not self.rows.__contains__(currentRow):
-                self.rows[expectedRow] = currentRow
-                self.remainingRows.remove(currentRow)
+        def add_row(self, current_row, expected_row):
+            if not self.rows.__contains__(current_row):
+                self.rows[expected_row] = current_row
+                self.remaining_rows.remove(current_row)
 
-        def add_column(self, currentColumn, expectedColumn):
-            if not self.columns.__contains__(currentColumn):
-                self.columns[expectedColumn] = currentColumn
-                self.remainingColumns.remove(currentColumn)
+        def add_column(self, current_column, expected_column):
+            if not self.columns.__contains__(current_column):
+                self.columns[expected_column] = current_column
+                self.remaining_columns.remove(current_column)
 
         def fill_empty_rows_and_columns(self):
-            self.fill_empty_indexes(self.rows, self.remainingRows)
-            self.fill_empty_indexes(self.columns, self.remainingColumns)
+            self.fill_empty_indexes(self.rows, self.remaining_rows)
+            self.fill_empty_indexes(self.columns, self.remaining_columns)
 
         def get_coordinates(self, value):
-            return (value / self.get_m(), value % self.get_m())
+            return value / self.get_m(), value % self.get_m()
 
         def fill_empty_indexes(self, all, remaining):
             empty = [i for i, val in enumerate(all) if val == None]
@@ -67,9 +67,9 @@ class GridSortMax:
             return self.columns.__len__()
 
     def swap(self, grid, columns, rows):
-        rowsSwapped = self.swap_rows(grid, rows)
-        columnsSwapped = self.swap_columns(rowsSwapped, columns)
-        return columnsSwapped
+        rows_swapped = self.swap_rows(grid, rows)
+        columns_swapped = self.swap_columns(rows_swapped, columns)
+        return columns_swapped
 
     def swap_rows(self, grid, rows):
         source = lambda row, column: row * self.m + column
