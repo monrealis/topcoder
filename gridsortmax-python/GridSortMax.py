@@ -23,8 +23,8 @@ class GridSortMax:
             return self.rows, self.columns
 
         def add_next_value(self, value):
-            (expected_row, expected_column) = self.get_coordinates(value - 1)
-            (current_row, current_column) = self.find_current_coordinates(value)
+            expected_row, expected_column = self.get_coordinates(value - 1)
+            current_row, current_column = self.find_current_coordinates(value)
             if self.rows[expected_row] not in (None, current_row):
                 return
             if self.columns[expected_column] not in (None, current_column):
@@ -72,13 +72,17 @@ class GridSortMax:
         return columns_swapped
 
     def swap_rows(self, grid, rows):
-        source = lambda row, column: row * self.m + column
-        target = lambda row, column: rows[row] * self.m + column
+        def source(row, column): return row * self.m + column
+
+        def target(row, column): return rows[row] * self.m + column
+
         return self.swap_cells(grid, source, target)
 
     def swap_columns(self, grid, columns):
-        source = lambda row, column: row * self.m + column
-        target = lambda row, column: row * self.m + columns[column]
+        def source(row, column): return row * self.m + column
+
+        def target(row, column): return row * self.m + columns[column]
+
         return self.swap_cells(grid, source, target)
 
     def swap_cells(self, grid, source, target):
