@@ -33,12 +33,12 @@ class GridSortMax:
             self.add_column(current_column, expected_column)
 
         def add_row(self, current_row, expected_row):
-            if not self.rows.__contains__(current_row):
+            if current_row not in self.rows:
                 self.rows[expected_row] = current_row
                 self.remaining_rows.remove(current_row)
 
         def add_column(self, current_column, expected_column):
-            if not self.columns.__contains__(current_column):
+            if current_column not in self.columns:
                 self.columns[expected_column] = current_column
                 self.remaining_columns.remove(current_column)
 
