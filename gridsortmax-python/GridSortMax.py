@@ -50,7 +50,7 @@ class GridSortMax:
             return value / self.get_m(), value % self.get_m()
 
         def fill_empty_indexes(self, all, remaining):
-            empty = [i for i, val in enumerate(all) if val == None]
+            empty = [i for i, val in enumerate(all) if val is None]
             for i, index in enumerate(empty):
                 all[index] = remaining[i]
 
