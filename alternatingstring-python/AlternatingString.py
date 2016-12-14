@@ -1,4 +1,3 @@
 class AlternatingString:
-
-	def maxLength(self, s):
-		return None
+    def maxLength(self, s):
+        return None

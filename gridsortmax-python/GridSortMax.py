@@ -56,7 +56,7 @@ class GridSortMax:
 
         def find_current_coordinates(self, value):
             return self.get_coordinates(self.grid.index(value))
-
+gimėgimė
         def get_cell_count(self):
             return self.get_n() * self.get_m()
 
