@@ -1,4 +1,3 @@
 class DAGConstruction:
-
-	def construct(self, x):
-		return None
+    def construct(self, x):
+        return None
