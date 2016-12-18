@@ -7,19 +7,26 @@ class DAGConstruction:
         while self.remaining_indexes:
             index = self.take_next_index()
             reaching = self.get_reaching(index, self.edges)
-            if reaching == self.x[index]:
-                pass
-            else:
+            if reaching != self.x[index]:
                 for to in list(range(len(self.x))):
                     if index == to:
                         continue
                     edge = (index, to)
-                    nn = self.get_reaching(index, self.edges + [edge])
-                    if nn == self.x[index]:
+                    reaching_with_edge = self.get_reaching(index, self.edges + [edge])
+                    if reaching_with_edge == self.x[index]:
                         self.edges.append(edge)
+        if self.found():
+            return self.flatten_edges()
+        else:
+            return [-1]
+
+    def found(self):
+        return self.get_reachings() == self.x
+
+    def flatten_edges(self):
         result = []
         for edge in self.edges:
-            result += list(edge);
+            result += list(edge)
         return result
 
     def take_next_index(self):
@@ -29,6 +36,12 @@ class DAGConstruction:
         del self.remaining_x[min_index]
         del self.remaining_indexes[min_index]
         return x_index
+
+    def get_reachings(self):
+        reachings = []
+        for i in range(len(self.x)):
+            reachings.append(self.get_reaching(i, self.edges))
+        return reachings
 
     def get_reaching(self, index, edges):
         r = [index]
