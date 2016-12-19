@@ -1,3 +1,5 @@
+import itertools;
+
 class DAGConstruction:
     def construct(self, x):
         self.remaining_x = x + []
@@ -7,14 +9,19 @@ class DAGConstruction:
         while self.remaining_indexes:
             index = self.take_next_index()
             reaching = self.get_reaching(index, self.edges)
-            if reaching != self.x[index]:
-                for to in list(range(len(self.x))):
-                    if index == to:
+            delta = self.x[index] - reaching
+            if delta != 0:
+                combinations = list(itertools.combinations(range(len(self.x)), delta))
+                print(combinations)
+                for to in combinations:
+                    if index in to:
                         continue
-                    edge = (index, to)
-                    reaching_with_edge = self.get_reaching(index, self.edges + [edge])
+                    newEdges = [];
+                    for t in to:
+                        newEdges.append((index, t));
+                    reaching_with_edge = self.get_reaching(index, self.edges + newEdges)
                     if reaching_with_edge == self.x[index]:
-                        self.edges.append(edge)
+                        self.edges.extend(newEdges)
         if self.found():
             return self.flatten_edges()
         else:
