@@ -1,5 +1,6 @@
 import itertools;
 
+
 class DAGConstruction:
     def construct(self, x):
         self.remaining_x = x + []
@@ -15,23 +16,28 @@ class DAGConstruction:
             delta = self.x[index] - reaching
             if delta != 0:
                 r = range(len(self.x))
-                combinations = list(itertools.combinations(r, delta))
-                print(combinations)
-                for to in combinations:
-                    if index in to:
-                        continue
-                    skip = False
-                    for t in to:
-                        if (t, index) in self.edges:
-                            skip = True
-                    if skip:
+                to_nodes_combinations = list(itertools.combinations(r, delta))
+                print(to_nodes_combinations)
+                for to_nodes in to_nodes_combinations:
+                    if self.loop_would_exist(index, to_nodes):
                         continue
                     newEdges = [];
-                    for t in to:
+                    for t in to_nodes:
                         newEdges.append((index, t));
                     reaching_with_edge = self.get_reaching(index, self.edges + newEdges)
                     if reaching_with_edge == self.x[index]:
                         self.edges.extend(newEdges)
+        return self.create_result()
+
+    def loop_would_exist(self, from_node, to_nodes):
+        if from_node in to_nodes:
+            return True
+        for to in to_nodes:
+            if (to, from_node) in self.edges:
+                return True
+        return False
+
+    def create_result(self):
         if self.found():
             return self.flatten_edges()
         else:
