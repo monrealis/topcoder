@@ -14,10 +14,17 @@ class DAGConstruction:
             reaching = self.get_reaching(index, self.edges)
             delta = self.x[index] - reaching
             if delta != 0:
-                combinations = list(itertools.combinations(range(len(self.x)), delta))
+                r = range(len(self.x))
+                combinations = list(itertools.combinations(r, delta))
                 print(combinations)
                 for to in combinations:
                     if index in to:
+                        continue
+                    skip = False
+                    for t in to:
+                        if (t, index) in self.edges:
+                            skip = True
+                    if skip:
                         continue
                     newEdges = [];
                     for t in to:
