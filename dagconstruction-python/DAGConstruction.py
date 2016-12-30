@@ -6,6 +6,9 @@ class DAGConstruction:
         self.remaining_indexes = list(range(len(x)))
         self.edges = []
         self.x = x;
+        return self.run()
+
+    def run(self):
         while self.remaining_indexes:
             index = self.take_next_index()
             reaching = self.get_reaching(index, self.edges)
