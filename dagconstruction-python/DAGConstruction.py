@@ -11,15 +11,19 @@ class DAGConstruction:
     def inspect_remaining(self):
         solutions = [[]]
         while self.remaining_indexes:
-            next_from = self.take_next_index()
-            next_solutions = []
-            for solution in solutions:
-                next = self.inspect_next_node(next_from, solution)
-                next_solutions.extend(next);
+            next_from = self.take_next_from_node()
+            solutions = self.get_next_solutions(next_from, solutions)
         if solutions == []:
             return self.create_result([]);
         else:
             return self.create_result(solutions[0])
+
+    def get_next_solutions(self, next_from, solutions):
+        next_solutions = []
+        for solution in solutions:
+            next = self.inspect_next_node(next_from, solution)
+            next_solutions.extend(next);
+        return next_solutions
 
     def inspect_next_node(self, from_node, edges):
         reaching = self.get_reaching(from_node, edges)
@@ -36,7 +40,6 @@ class DAGConstruction:
                 new_edges.append((from_node, t));
             reaching_with_edge = self.get_reaching(from_node, edges + new_edges)
             if reaching_with_edge == self.x[from_node]:
-                edges.extend(new_edges)
                 solutions.append(edges + new_edges)
         return solutions
 
@@ -63,7 +66,7 @@ class DAGConstruction:
             result += list(edge)
         return result
 
-    def take_next_index(self):
+    def take_next_from_node(self):
         min_value = min(self.remaining_x)
         min_index = self.remaining_x.index(min_value)
         x_index = self.remaining_indexes[min_index]
