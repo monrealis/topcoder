@@ -9,12 +9,17 @@ class DAGConstruction:
         return self.inspect_remaining()
 
     def inspect_remaining(self):
-        edges = []
+        solutions = [[]]
         while self.remaining_indexes:
-            solutions = self.inspect_next_node(self.take_next_index(), edges)
-            if solutions == []:
-                break;
-        return self.create_result(edges)
+            next_from = self.take_next_index()
+            next_solutions = []
+            for solution in solutions:
+                next = self.inspect_next_node(next_from, solution)
+                next_solutions.extend(next);
+        if solutions == []:
+            return self.create_result([]);
+        else:
+            return self.create_result(solutions[0])
 
     def inspect_next_node(self, from_node, edges):
         reaching = self.get_reaching(from_node, edges)
