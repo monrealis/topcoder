@@ -30,21 +30,21 @@ class DAGConstruction:
 
     def inspect_next_node(self, from_node, edges):
         reaching = self.get_reaching(from_node, edges)
-        delta = self.x[from_node] - reaching
+        max_delta = self.x[from_node] - reaching
         solutions = []
         r = range(len(self.x))
-        #TODO loop
-        to_nodes_combinations = list(itertools.combinations(r, delta))
-        #print(to_nodes_combinations)
-        for to_nodes in to_nodes_combinations:
-            if self.loop_would_exist(from_node, to_nodes, edges):
-                continue
-            new_edges = [];
-            for t in to_nodes:
-                new_edges.append((from_node, t));
-            reaching_with_edge = self.get_reaching(from_node, edges + new_edges)
-            if reaching_with_edge == self.x[from_node]:
-                solutions.append(edges + new_edges)
+        for delta in range(max_delta + 1):
+            to_nodes_combinations = list(itertools.combinations(r, max_delta))
+            #print(to_nodes_combinations)
+            for to_nodes in to_nodes_combinations:
+                if self.loop_would_exist(from_node, to_nodes, edges):
+                    continue
+                new_edges = [];
+                for t in to_nodes:
+                    new_edges.append((from_node, t));
+                reaching_with_edge = self.get_reaching(from_node, edges + new_edges)
+                if reaching_with_edge == self.x[from_node]:
+                    solutions.append(edges + new_edges)
         return solutions
 
     def loop_would_exist(self, from_node, to_nodes, edges):
@@ -66,11 +66,11 @@ class DAGConstruction:
         return result
 
     def take_next_from_node(self):
-        value = self.remaining_x[0]
-        index = self.remaining_x.index(value)
-        x_index = self.remaining_indexes[index]
-        del self.remaining_x[index]
-        del self.remaining_indexes[index]
+        min_value = min(self.remaining_x)
+        min_index = self.remaining_x.index(min_value)
+        x_index = self.remaining_indexes[min_index]
+        del self.remaining_x[min_index]
+        del self.remaining_indexes[min_index]
         return x_index
 
     def is_minimal(self, edges):
