@@ -17,7 +17,8 @@ class DAGConstruction:
                 print('%s %s' % (next_from, solution))
         for solution in solutions:
             if self.found(solution):
-                return self.flatten_edges(solution)
+                if self.is_minimal(solution):
+                    return self.flatten_edges(solution)
         return [-1]
 
     def get_next_solutions(self, next_from, solutions):
@@ -32,6 +33,7 @@ class DAGConstruction:
         delta = self.x[from_node] - reaching
         solutions = []
         r = range(len(self.x))
+        #TODO loop
         to_nodes_combinations = list(itertools.combinations(r, delta))
         #print(to_nodes_combinations)
         for to_nodes in to_nodes_combinations:
@@ -70,6 +72,16 @@ class DAGConstruction:
         del self.remaining_x[index]
         del self.remaining_indexes[index]
         return x_index
+
+    def is_minimal(self, edges):
+        reachings = self.get_reachings(edges)
+        for i in range(len(edges)):
+            less_edges = edges + []
+            del less_edges[i]
+            less_reachings = self.get_reachings(less_edges)
+            if less_reachings == reachings:
+                return False;
+        return True
 
     def get_reachings(self, edges):
         reachings = []
