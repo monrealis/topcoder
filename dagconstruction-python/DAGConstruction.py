@@ -64,11 +64,11 @@ class DAGConstruction:
         return result
 
     def take_next_from_node(self):
-        min_value = min(self.remaining_x)
-        min_index = self.remaining_x.index(min_value)
-        x_index = self.remaining_indexes[min_index]
-        del self.remaining_x[min_index]
-        del self.remaining_indexes[min_index]
+        value = self.remaining_x[0]
+        index = self.remaining_x.index(value)
+        x_index = self.remaining_indexes[index]
+        del self.remaining_x[index]
+        del self.remaining_indexes[index]
         return x_index
 
     def get_reachings(self, edges):
