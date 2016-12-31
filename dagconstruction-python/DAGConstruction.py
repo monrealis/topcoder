@@ -3,9 +3,9 @@ import itertools;
 
 class DAGConstruction:
     def construct(self, x):
-        self.remaining_x = x + []
-        self.remaining_indexes = list(range(len(x)))
         self.x = x;
+        self.remaining_x = x + []
+        self.remaining_indexes = self.get_node_indexes()
         return self.inspect_remaining()
 
     def inspect_remaining(self):
@@ -33,18 +33,17 @@ class DAGConstruction:
         reaching = self.get_reaching(from_node, edges)
         max_delta = self.x[from_node] - reaching
         solutions = []
-        r = range(len(self.x))
         for delta in range(max_delta + 1):
-            to_nodes_combinations = list(itertools.combinations(r, delta))
+            to_nodes_combinations = list(itertools.combinations(self.get_node_indexes(), delta))
             for to_nodes in to_nodes_combinations:
                 if self.loop_would_exist(from_node, to_nodes, edges):
                     continue
-                new_edges = self.get_new_edges(from_node, to_nodes)
-                if not self.is_minimal(edges + new_edges):
+                edges_with_new = edges + self.get_new_edges(from_node, to_nodes)
+                if not self.is_minimal(edges_with_new):
                     continue
-                reaching_with_new_edges = self.get_reaching(from_node, edges + new_edges)
+                reaching_with_new_edges = self.get_reaching(from_node, edges_with_new)
                 if reaching_with_new_edges == self.x[from_node]:
-                    solutions.append(edges + new_edges)
+                    solutions.append(edges_with_new)
         return solutions
 
     def get_new_edges(self, from_node, to_nodes):
@@ -91,9 +90,12 @@ class DAGConstruction:
 
     def get_reachings(self, edges):
         reachings = []
-        for i in range(len(self.x)):
+        for i in self.get_node_indexes():
             reachings.append(self.get_reaching(i, edges))
         return reachings
+
+    def get_node_indexes(self):
+        return list(range(len(self.x)))
 
     def get_reaching(self, index, edges):
         r = [index]
