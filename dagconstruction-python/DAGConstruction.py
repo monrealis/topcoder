@@ -18,7 +18,8 @@ class DAGConstruction:
         for solution in solutions:
             if self.found(solution):
                 if self.is_minimal(solution):
-                    return self.flatten_edges(solution)
+                    s = sorted(solution)
+                    return self.flatten_edges(s)
         return [-1]
 
     def get_next_solutions(self, next_from, solutions):
@@ -34,7 +35,7 @@ class DAGConstruction:
         solutions = []
         r = range(len(self.x))
         for delta in range(max_delta + 1):
-            to_nodes_combinations = list(itertools.combinations(r, max_delta))
+            to_nodes_combinations = list(itertools.combinations(r, delta))
             #print(to_nodes_combinations)
             for to_nodes in to_nodes_combinations:
                 if self.loop_would_exist(from_node, to_nodes, edges):
