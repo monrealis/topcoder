@@ -99,12 +99,16 @@ class DAGConstruction:
 
     def get_reaching(self, index, edges):
         r = [index]
-        while True:
-            changed = False
+        e = set(edges)
+        proceed = True
+        while proceed:
+            proceed = False
             for from_, to in edges:
-                if from_ in r and not to in r:
-                    r.append(to)
-                    changed = True
-            if not changed:
-                break
+                if from_ not in r:
+                    continue;
+                if to in r:
+                    continue;
+                r.append(to)
+                e.remove((from_, to))
+                proceed = True
         return len(r)
