@@ -13,10 +13,12 @@ class DAGConstruction:
         while self.remaining_indexes:
             next_from = self.take_next_from_node()
             solutions = self.get_next_solutions(next_from, solutions)
-        if solutions == []:
-            return self.create_result([]);
-        else:
-            return self.create_result(solutions[0])
+            for solution in solutions:
+                print('%s %s' % (next_from, solution))
+        for solution in solutions:
+            if self.found(solution):
+                return self.flatten_edges(solution)
+        return [-1]
 
     def get_next_solutions(self, next_from, solutions):
         next_solutions = []
@@ -31,7 +33,7 @@ class DAGConstruction:
         solutions = []
         r = range(len(self.x))
         to_nodes_combinations = list(itertools.combinations(r, delta))
-        print(to_nodes_combinations)
+        #print(to_nodes_combinations)
         for to_nodes in to_nodes_combinations:
             if self.loop_would_exist(from_node, to_nodes, edges):
                 continue
@@ -51,14 +53,9 @@ class DAGConstruction:
                 return True
         return False
 
-    def create_result(self, edges):
-        if self.found(edges):
-            return self.flatten_edges(edges)
-        else:
-            return [-1]
-
     def found(self, edges):
-        return self.get_reachings(edges) == self.x
+        reachings = self.get_reachings(edges)
+        return reachings == self.x
 
     def flatten_edges(self, edges):
         result = []
