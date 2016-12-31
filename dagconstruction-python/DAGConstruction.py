@@ -13,13 +13,9 @@ class DAGConstruction:
         while self.remaining_indexes:
             next_from = self.take_next_from_node()
             solutions = self.get_next_solutions(next_from, solutions)
-            for solution in solutions:
-                print('%s %s' % (next_from, solution))
         for solution in solutions:
-            if self.found(solution):
-                if self.is_minimal(solution):
-                    s = sorted(solution)
-                    return self.flatten_edges(s)
+            if self.is_solution(solution):
+                return self.flatten_edges(sorted(solution))
         return [-1]
 
     def get_next_solutions(self, next_from, solutions):
@@ -29,6 +25,10 @@ class DAGConstruction:
             next_solutions.extend(next);
         return next_solutions
 
+    def print_solutions(self, next_from, solutions):
+        for solution in solutions:
+            print('%s %s' % (next_from, solution))
+
     def inspect_next_node(self, from_node, edges):
         reaching = self.get_reaching(from_node, edges)
         max_delta = self.x[from_node] - reaching
@@ -36,17 +36,22 @@ class DAGConstruction:
         r = range(len(self.x))
         for delta in range(max_delta + 1):
             to_nodes_combinations = list(itertools.combinations(r, delta))
-            #print(to_nodes_combinations)
             for to_nodes in to_nodes_combinations:
                 if self.loop_would_exist(from_node, to_nodes, edges):
                     continue
-                new_edges = [];
-                for t in to_nodes:
-                    new_edges.append((from_node, t));
-                reaching_with_edge = self.get_reaching(from_node, edges + new_edges)
-                if reaching_with_edge == self.x[from_node]:
+                new_edges = self.get_new_edges(from_node, to_nodes)
+                if not self.is_minimal(edges + new_edges):
+                    continue
+                reaching_with_new_edges = self.get_reaching(from_node, edges + new_edges)
+                if reaching_with_new_edges == self.x[from_node]:
                     solutions.append(edges + new_edges)
         return solutions
+
+    def get_new_edges(self, from_node, to_nodes):
+        new_edges = [];
+        for t in to_nodes:
+            new_edges.append((from_node, t));
+        return new_edges
 
     def loop_would_exist(self, from_node, to_nodes, edges):
         if from_node in to_nodes:
@@ -56,7 +61,7 @@ class DAGConstruction:
                 return True
         return False
 
-    def found(self, edges):
+    def is_solution(self, edges):
         reachings = self.get_reachings(edges)
         return reachings == self.x
 
