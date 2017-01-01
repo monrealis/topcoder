@@ -9,10 +9,16 @@ class DAGConstruction:
         return self.inspect_remaining()
 
     def inspect_remaining(self):
+        return self.create_result(self.find_all_solutions())
+
+    def find_all_solutions(self):
         solutions = [[]]
         while self.remaining_indexes:
             next_from = self.take_next_from_node()
             solutions = self.get_next_solutions(next_from, solutions)
+        return solutions
+
+    def create_result(self, solutions):
         for solution in solutions:
             if self.is_solution(solution):
                 return self.flatten_edges(sorted(solution))
