@@ -44,9 +44,11 @@ class DAGConstruction:
             for to_nodes in to_nodes_combinations:
                 if self.loop_would_exist(from_node, to_nodes, edges):
                     continue
+                if not self.is_minimal(edges):
+                    continue
                 edges_with_new = edges + self.get_new_edges(from_node, to_nodes)
                 if not self.is_minimal(edges_with_new):
-                    continue
+                    continue # pass?
                 reaching_with_new_edges = self.get_reaching(from_node, edges_with_new)
                 if reaching_with_new_edges == self.x[from_node]:
                     solutions.append(edges_with_new)
