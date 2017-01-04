@@ -6,6 +6,7 @@ class DAGConstruction:
         self.x = x;
         self.remaining_x = x + []
         self.remaining_indexes = self.get_node_indexes()
+        self.inspected_x = []
         return self.inspect_remaining()
 
     def inspect_remaining(self):
@@ -16,6 +17,7 @@ class DAGConstruction:
         while self.remaining_indexes:
             next_from = self.take_next_from_node()
             solutions = self.get_next_solutions(next_from, solutions)
+            self.inspected_x.append(next_from)
         return solutions
 
     def create_result(self, solutions):
@@ -40,7 +42,7 @@ class DAGConstruction:
         max_delta = self.x[from_node] - reaching
         solutions = []
         for delta in range(max_delta + 1):
-            to_nodes_combinations = list(itertools.combinations(self.get_node_indexes(), delta))
+            to_nodes_combinations = list(itertools.combinations(self.inspected_x, delta))
             for to_nodes in to_nodes_combinations:
                 if self.loop_would_exist(from_node, to_nodes, edges):
                     continue
