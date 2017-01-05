@@ -41,6 +41,11 @@ class DAGConstruction:
         reaching = self.get_reaching(from_node, edges)
         max_delta = self.x[from_node] - reaching
         solutions = []
+
+        d = self.x[from_node]
+        if (self.inspected_x):
+            pass
+            #print(str(d) + ' ' + str(self.x[self.inspected_x[-1]]))
         for delta in range(max_delta + 1):
             to_nodes_combinations = list(itertools.combinations(self.inspected_x, delta))
             for to_nodes in to_nodes_combinations:
@@ -54,6 +59,8 @@ class DAGConstruction:
                 reaching_with_new_edges = self.get_reaching(from_node, edges_with_new)
                 if reaching_with_new_edges == self.x[from_node]:
                     solutions.append(edges_with_new)
+                    print(delta)
+        #print(solutions)
         return solutions
 
     def get_new_edges(self, from_node, to_nodes):
