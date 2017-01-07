@@ -41,7 +41,6 @@ class DAGConstruction:
         reaching = self.get_reaching(from_node, edges)
         max_delta = self.x[from_node] - reaching
         solutions = []
-        d = self.x[from_node]
         for delta in range(max_delta + 1):
             to_nodes_combinations = list(itertools.combinations(self.inspected_x, delta))
             for to_nodes in to_nodes_combinations:
