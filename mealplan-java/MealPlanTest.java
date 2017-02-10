@@ -11,7 +11,7 @@ public class MealPlanTest {
         solution = new MealPlan();
     }
 
-    @Test(timeout = 2000)
+    @Test//(timeout = 2000)
     public void testCase0() {
         int[] morningMeal = new int[]{1, 2};
         int[] noonMeal = new int[]{1, 2};
