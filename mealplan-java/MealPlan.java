@@ -22,7 +22,8 @@ public class MealPlan {
 	}
 
 	private String getPlan(int number) {
-		return join(getDishes(getIndexes(number)));
+		List<Integer> dishes = getDishes(getIndexes(number));
+		return sortedCopy(dishes).toString();
 	}
 
 	private List<Integer> getIndexes(int number) {
@@ -49,11 +50,9 @@ public class MealPlan {
 		return r;
 	}
 
-	private String join(List<Integer> dishes) {
-		sort(dishes);
-		String r = "";
-		for (int n : dishes)
-			r += n + ",";
-		return r;
+	private List<Integer> sortedCopy(List<Integer> dishes) {
+		List<Integer> copy = new ArrayList<>(dishes);
+		sort(copy);
+		return copy;
 	}
 }
